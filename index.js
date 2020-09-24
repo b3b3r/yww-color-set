@@ -1,13 +1,14 @@
+const numberOfGradient = 4;
 const COLORS = [
   { name: "pink", hex: "#febbcc" },
   { name: "orange", hex: "#fc5876" },
   { name: "red", hex: "#c81859" },
   { name: "yellow", hex: "#fecb2e" },
-  { name: "green", hex: "#30c322" },
-  { name: "light-blue", hex: "#1fb8f4" },
-  { name: "mid-blue", hex: "#122269" },
-  { name: "dark-blue", hex: "#05052c" },
-  { name: "gray", hex: "#b4b4b4" }
+  // { name: "green", hex: "#30c322" },
+  // { name: "light-blue", hex: "#1fb8f4" },
+  // { name: "mid-blue", hex: "#122269" },
+  // { name: "dark-blue", hex: "#05052c" },
+  // { name: "gray", hex: "#b4b4b4" }
 ];
 
 const makeColoredBox = hex => {
@@ -39,23 +40,32 @@ function shadeColor(color, percent) {
   return "#" + RR + GG + BB;
 };
 
-const makeGradientColors = (mainBox, gradient = 0) => {
+const makeDarkerColors = (mainBox, gradient = 0) => {
   const mainColor = COLORS.find(({ name }) => name === mainBox.getAttribute("id")).hex;
-  const numberOfGradient = 5
-  for (let i = 0; i < numberOfGradient; i++) {
-    const hex = shadeColor(mainColor, i * gradient)
+  for (let i = 1; i < numberOfGradient + 1; i++) {
+    const hex = shadeColor(mainColor, -(i * gradient))
     const coloredBox = makeColoredBox(hex);
     mainBox.append(coloredBox);
   };
 };
 
-const makeMainBox = (colors, gradient) => {
+const makeLighterColors = (mainBox, gradient = 0) => {
+  const mainColor = COLORS.find(({ name }) => name === mainBox.getAttribute("id")).hex;
+  for (let i = 1; i < numberOfGradient + 1; i++) {
+    const hex = shadeColor(mainColor, i * gradient)
+    const coloredBox = makeColoredBox(hex);
+    mainBox.prepend(coloredBox);
+  };
+};
+
+const makeBox = (colors, gradient) => {
   const main = document.querySelector('#main');
   colors.forEach(({ name, hex }) => {
     const box = makeColoredBox(hex);
     box.setAttribute("id", name);
     main.append(box);
-    makeGradientColors(box, gradient);
+    makeLighterColors(box, gradient)
+    makeDarkerColors(box, gradient);
   });
 };
 
@@ -71,7 +81,7 @@ const editGradientLevel = () => {
   input.addEventListener("keyup", () => {
     deleteBox();
     gradient = input.value;
-    makeMainBox(COLORS, gradient);
+    makeBox(COLORS, gradient);
   });
 };
 
