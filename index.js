@@ -1,5 +1,3 @@
-let GRADIENT = 5;
-
 const COLORS = [
   { name: "pink", hex: "#febbcc" },
   { name: "orange", hex: "#fc5876" },
@@ -40,33 +38,40 @@ function shadeColor(color, percent) {
   return "#" + RR + GG + BB;
 };
 
-const makeGradientColors = mainBox => {
+const makeGradientColors = (mainBox, gradient = 0) => {
   const mainColor = COLORS.find(({ name }) => name === mainBox.getAttribute("id")).hex;
   const numberOfGradient = 5
   for (let i = 0; i < numberOfGradient; i++) {
-    const hex = shadeColor(mainColor, i * GRADIENT)
+    const hex = shadeColor(mainColor, i * gradient)
     const coloredBox = makeColoredBox(hex);
     mainBox.append(coloredBox);
   };
 };
 
-const makeMainBox = colors => {
+const makeMainBox = (colors, gradient) => {
   const main = document.querySelector('#main');
   colors.forEach(({ name, hex }) => {
     const box = makeColoredBox(hex);
     box.setAttribute("id", name);
     main.append(box);
-    makeGradientColors(box);
+    makeGradientColors(box, gradient);
   });
+};
+
+const deleteBox = () => {
+  const main = document.querySelector('#main');
+  while (main.firstChild) {
+    main.removeChild(main.lastChild);
+  }
 };
 
 const editGradientLevel = () => {
   const input = document.querySelector('#contrast');
   input.addEventListener("keyup", () => {
-    GRADIENT = input.value;
+    deleteBox();
+    gradient = input.value;
+    makeMainBox(COLORS, gradient);
   });
-  console.log(GRADIENT);
 };
 
-makeMainBox(COLORS);
 editGradientLevel();
