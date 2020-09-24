@@ -15,6 +15,7 @@ const makeColoredBox = hex => {
   box.style.backgroundColor = hex;
   box.style.width = '100px';
   box.style.height = '50px';
+  box.innerText = hex
   return box;
 };
 
